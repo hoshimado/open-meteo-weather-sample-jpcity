@@ -1,21 +1,24 @@
 import requests
 
+# モジュールレベルの定数として定義
+LOCATION_DICT: dict = {
+    "tokyo" : {
+        "latitude" : "35.6785",
+        "longitude": "139.6823",
+    },
+    "nagoya" : {
+        "latitude" : "35.1814",
+        "longitude": "136.9063",
+    },
+    "osaka" : {
+        "latitude" : "34.6937",
+        "longitude": "135.5021",
+    },
+}
+
 def get(location: str) -> dict:
-    location_dict: dict = {
-        "tokyo" : {
-            "latitude" : "35.6785",
-            "longitude": "139.6823",
-        },
-        "nagoya" : {
-            "latitude" : "35.1814",
-            "longitude": "136.9063",
-        },
-        "osaka" : {
-            "latitude" : "34.6937",
-            "longitude": "135.5021",
-        },
-    }
-    selected_location = location_dict[location]
+    # 関数の外側に定義された定数を参照
+    selected_location = LOCATION_DICT[location]
     latitude = selected_location["latitude"]
     longitude= selected_location["longitude"]
     timezone = "Asia%2FTokyo"
