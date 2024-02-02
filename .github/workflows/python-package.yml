@@ -19,9 +19,9 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -44,11 +44,11 @@ jobs:
         python setup.py bdist_wheel
         python setup.py sdist
     - name: Upload the whl-file to artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with: 
         name: packagedwheel
         path: ./dist/*
       if: matrix.python-version == '3.11'
+      # Pythonバージョンに依存しないPKGなので、最新バージョンのみで成果物を保存する
 
 
-      
