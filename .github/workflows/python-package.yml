@@ -19,7 +19,9 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
 
     permissions:
-      id-token: write # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write 
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      # これを指定するときは、リポジトリがPublicである必要がある？
 
     steps:
     - uses: actions/checkout@v4
