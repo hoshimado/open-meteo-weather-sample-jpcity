@@ -11,17 +11,14 @@ on:
 
 jobs:
   build:
-
+    name: Build distribution and Test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
-
-    permissions:
-      id-token: write 
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      # これを指定するときは、リポジトリがPublicである必要がある？
+    env:
+      SELECTED_VERSION4BUILD: "3.11"
 
     steps:
     - uses: actions/checkout@v4
@@ -29,7 +26,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install dependencies for build, pytest
       run: |
         python -m pip install --upgrade pip
         python -m pip install --upgrade setuptools wheel
@@ -44,21 +41,46 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest -v
-    - name: Build distributoin package
+    - name: Build a binary wheel and a source tarball
       run: |
         python setup.py bdist_wheel
         python setup.py sdist
-    - name: Upload the whl-file to artifact
+    - name: Store the distribution packages to artifact
       uses: actions/upload-artifact@v4
       with: 
-        name: packagedwheel
+        name: python-package-distributions
         path: ./dist/*
-      if: matrix.python-version == '3.11'
-      # Pythonバージョンに依存しないPKGなので、最新バージョンのみで成果物を保存する
-    - name: Publish package distributions to TestPyPI
+      if: matrix.python-version == ${{ env.SELECTED_VERSION4BUILD }}
+      # Pythonバージョンに依存しないPKGなので、特定のバージョンのみで成果物を保存する
+
+
+
+  publish-to-testpypi:
+    name: Publish Python distribution to TestPyPI
+    if: startsWith(github.ref, 'refs/tags/')
+    # only publish to PyPI on tag pushes
+    needs: 
+    - build
+    # buildジョブが全て終わった後（＝artifactには1セットのみ成果物が格納されている）に実行を指定
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write 
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      # ※明示的に指定したもの以外は、GITHUB_TOKENの既存権限をnoneに指定する
+      #   したがって、たとえばPrivateリポジトリからのCheckoutを行う場合は明示的に
+      #   Contentsに対するread権限も付与する必要があることに注意。
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Publish distribution to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
-      if: matrix.python-version == '3.11'
-      # Pythonバージョンに依存しないPKGなので、最新バージョンのみで成果物を保存する
+  
+
+
   
