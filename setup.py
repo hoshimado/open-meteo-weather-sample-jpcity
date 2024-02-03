@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setuptools.setup(
     name="open-meteo-weather-sample-jpcity", # PEP503, PEP508に従いハイフン
-    version="0.0.dev2", # PEP440に従った体系。ここでは「Development release」と位置付ける
+    version="0.0.dev3", # PEP440に従った体系。ここでは「Development release」と位置付ける
     install_requires = requirements,  # requirements.txt の内容をそのままコピー
     entry_points={
         'console_scripts': [
