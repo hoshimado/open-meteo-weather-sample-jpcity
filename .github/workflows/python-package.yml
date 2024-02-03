@@ -50,7 +50,7 @@ jobs:
       with: 
         name: python-package-distributions
         path: ./dist/*
-      if: matrix.python-version == ${{ env.SELECTED_VERSION4BUILD }}
+      if: matrix.python-version == env.SELECTED_VERSION4BUILD
       # Pythonバージョンに依存しないPKGなので、特定のバージョンのみで成果物を保存する
 
 
