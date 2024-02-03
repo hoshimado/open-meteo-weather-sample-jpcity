@@ -16,6 +16,12 @@ LOCATION_DICT: dict = {
     },
 }
 
+
+def list_locations() -> list:
+    cityname_list = list(LOCATION_DICT.keys())
+    return cityname_list
+
+
 def get(location: str) -> dict:
     # 関数の外側に定義された定数を参照
     selected_location = LOCATION_DICT[location]
