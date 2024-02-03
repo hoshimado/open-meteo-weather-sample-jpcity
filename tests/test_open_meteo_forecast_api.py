@@ -1,7 +1,11 @@
 import pytest
 import requests
 from unittest.mock import Mock
-from open_meteo_weather_sample_jpcity import get
+
+# このロードで、__init__.pyに記載されているか？の検証も兼ねている。
+from open_meteo_weather_sample_jpcity import get, list_locations
+
+
 
 # モジュールレベルの定数として定義
 # TODO: 実装コード側と重複するので集約。定数なので検証対象外であり、コード側を参照したい。
@@ -19,6 +23,10 @@ LOCATION_DICT: dict = {
         "longitude": "135.5021",
     },
 }
+
+
+# locationとして期待する配列を定義
+EXPECTED_LOCATIONS_LIST = ["tokyo", "nagoya", "osaka"]
 
 # locationとexpected_resultのペアをリストで定義
 locations_and_results = [
@@ -39,7 +47,16 @@ locations_and_results = [
     })
 ]
 
-# パラメータ化されたテスト関数を定義
+
+def test_list_locations():
+    expected_result = EXPECTED_LOCATIONS_LIST
+
+    result = list_locations()
+    assert result == expected_result, f"Expected {expected_result}, but got {result}"
+
+
+
+# パラメータ化を利用してテストケースを定義
 @pytest.mark.parametrize("location, expected_result", locations_and_results)
 def test_get(location, expected_result):
     """
