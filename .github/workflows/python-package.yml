@@ -6,8 +6,8 @@ name: Python package
 on:
   push:
 #     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 jobs:
   build:
@@ -50,5 +50,10 @@ jobs:
         path: ./dist/*
       if: matrix.python-version == '3.11'
       # Pythonバージョンに依存しないPKGなので、最新バージョンのみで成果物を保存する
-
-
+    - name: Publish package distributions to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+      if: matrix.python-version == '3.11'
+      # Pythonバージョンに依存しないPKGなので、最新バージョンのみで成果物を保存する
+  
