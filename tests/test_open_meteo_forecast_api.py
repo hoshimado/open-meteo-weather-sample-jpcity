@@ -8,8 +8,7 @@ from open_meteo_weather_sample_jpcity import get, list_locations
 
 
 # モジュールレベルの定数として定義
-# TODO: 実装コード側と重複するので集約。定数なので検証対象外であり、コード側を参照したい。
-LOCATION_DICT: dict = {
+EXPECTED_COORDINATES_DICT: dict = {
     "tokyo" : {
         "latitude" : "35.6785",
         "longitude": "139.6823",
@@ -29,19 +28,16 @@ LOCATION_DICT: dict = {
 EXPECTED_LOCATIONS_LIST = ["tokyo", "nagoya", "osaka"]
 
 # locationとexpected_resultのペアをリストで定義
-locations_and_results = [
+stub_response_in_locations = [
     ("tokyo", {
-        "location": "tokyo",
         "time"          : "dummy_time",
         "temperature_2m": "dummy_temperature"
     }),
     ("nagoya", {
-        "location": "nagoya",
         "time"          : "dummy_time",
         "temperature_2m": "dummy_temperature"
     }),
     ("osaka", {
-        "location": "osaka",
         "time"          : "dummy_time",
         "temperature_2m": "dummy_temperature"
     })
@@ -57,25 +53,27 @@ def test_list_locations():
 
 
 # パラメータ化を利用してテストケースを定義
-@pytest.mark.parametrize("location, expected_result", locations_and_results)
-def test_get(location, expected_result):
+@pytest.mark.parametrize("location, stub_responce", stub_response_in_locations)
+def test_get(location, stub_responce):
     """
     This is the title of the test case.
     """
     
     # モックオブジェクトを作成
     mock_response = Mock()
-    mock_response.json.return_value = {"hourly": expected_result}
+    mock_response.json.return_value = {"hourly": stub_responce}
 
     # requests.getをモックに置き換え
     requests.get = Mock(return_value=mock_response)
 
     # 関数をテスト
     result = get(location)
-    assert result == expected_result
+    assert result["location"] == location
+    assert result["time"]           == stub_responce["time"]
+    assert result["temperature_2m"] == stub_responce["temperature_2m"]
 
     # APIが正しいURLで呼び出されたことを確認
-    selected_location = LOCATION_DICT[location]
+    selected_location = EXPECTED_COORDINATES_DICT[location]
     latitude = selected_location["latitude"]
     longitude= selected_location["longitude"]
     timezone = "Asia%2FTokyo"

@@ -1,11 +1,10 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Python package
+name: Publish Distri-Package to PyPI
 
 on:
   push:
-     branches: [ "main" ]
 
 jobs:
   build:
@@ -53,7 +52,7 @@ jobs:
 
 
 
-  publish-to-testpypi:
+  publish-to-pypi:
     name: Publish Python distribution to PyPI
     if: startsWith(github.ref, 'refs/tags/')
     # only publish to PyPI on tag pushes
@@ -74,9 +73,14 @@ jobs:
       with:
         name: python-package-distributions
         path: dist/
+    - name: Publish distribution to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+      if: ${{ github.ref != 'refs/heads/main' }}    
     - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-  
+      if: ${{ github.ref == 'refs/heads/main' }}    
 
 
   
