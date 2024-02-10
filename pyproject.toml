@@ -1,0 +1,23 @@
+[project]
+name = "open-meteo-weather-sample-jpcity"
+version = "0.0.dev2"
+description = "sample distribution-packages by pure-toml"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+authors = [
+    {name = "Hoshimado"}
+]
+
+dependencies = [
+    "requests==2.31.0"
+]
+
+
+[project.scripts]
+weatherforecast = "open_meteo_weather_sample_jpcity:main"
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
