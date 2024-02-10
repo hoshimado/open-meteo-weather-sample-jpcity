@@ -1,6 +1,6 @@
 [project]
 name = "open-meteo-weather-sample-jpcity"
-version = "0.0.dev2"
+version = "0.0.dev4"
 description = "sample distribution-packages by pure-toml"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
